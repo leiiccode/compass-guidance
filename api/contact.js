@@ -108,16 +108,31 @@ module.exports = async function contactHandler(req, res) {
     return respond(res, 502, { error: "Message delivery failed. Please try again." });
   }
 
+  const contentType = upstream.headers.get("content-type") || "unknown";
+  let responseBody;
+  try {
+    responseBody = await upstream.text();
+  } catch (error) {
+    console.error("Unable to read Web3Forms response:", error, {
+      status: upstream.status,
+      contentType,
+    });
+    return respond(res, 502, { error: "Message delivery failed. Please try again." });
+  }
   let result;
   try {
-    result = await upstream.json();
+    result = JSON.parse(responseBody);
   } catch (error) {
-    console.error("Web3Forms returned an invalid response:", error);
+    console.error("Web3Forms returned a non-JSON response.", {
+      status: upstream.status,
+      contentType,
+    });
     return respond(res, 502, { error: "Message delivery failed. Please try again." });
   }
   if (!upstream.ok || !result || typeof result !== "object" || !result.success) {
     console.error("Web3Forms rejected a contact form submission.", {
       status: upstream.status,
+      contentType,
     });
     return respond(res, 502, { error: "Message delivery failed. Please try again." });
   }
