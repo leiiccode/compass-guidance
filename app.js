@@ -1,86 +1,479 @@
-const EM='compassonlineclinic@gmail.com';
-const IMAGE_ROOT=new URL('assets/images/',document.currentScript.src);
-const MAP_QUERY='AMA Computer College Bitas Cabanatuan City Nueva Ecija';
-const NAV=[['home','Home'],['about','About'],['team','Our Team'],['services','Services'],['location','Location'],['contact','Contact']];
-const TEAM=[
-['Dr. Charissa M. Rañeses','Stress Management & Daily Routines','Assists individuals with stress management and positive daily routines.','Dr. Charissa M. Rañeses assists individuals with stress management techniques, relaxation, and establishing healthy daily routines.'],
-['Richard Pletado','Personal Growth & Emotional Resilience','Provides a compassionate ear for personal growth and emotional resilience.','Richard Pletado provides a compassionate ear for personal growth, mindfulness, and overcoming everyday stress.'],
-['Rae Wendy T. Lazaro','Student Advocacy & Empowerment','Dedicated to student advocacy, peer support, and personal empowerment.','Rae Wendy T. Lazaro is dedicated to student advocacy, peer support programs, and empowering individuals to discover their strengths.'],
-['Carleen O. Mata','Leadership & Career Pathing','Focuses on leadership development, career pathing, and community support.','Carleen O. Mata focuses on leadership development, career pathing, and building strong peer support communities for young adults.'],
-['Dr. Aileen Villanueva','Academic Counseling & Student Support','Dedicated to helping students navigate academic milestones with empathy.','Dr. Aileen Villanueva brings over 10 years of experience helping students navigate academic milestones, time management, and personal growth with empathy and actionable advice.'],
-['Lerrie De Leon','Mindful Reflection & Goal Setting','Passionate about mindful reflection, counseling support, and goal setting.','Lerrie De Leon is passionate about mindful reflection, counseling support, and helping individuals set achievable life goals.'],
-['Nathalie Cogay','Student Welfare & Positive Encouragement','Specializes in student welfare, academic planning, and positive encouragement.','Nathalie Cogay specializes in student welfare, academic planning, and cultivating positive emotional resilience.']];
-const SERV=[['message','Counseling','One-on-one sessions offering professional support, clarity, and personalized coping strategies.','Available'],['compass','Guidance','Directional mentoring for students and adults navigating life choices and personal milestones.','Available'],['heart','Marital Therapy','Couples counseling designed to restore communication, trust, and relationship harmony.','Specialized'],['people','Family Counseling','Support for families to resolve conflict, understand dynamics, and strengthen bonds.','Specialized'],['brain','Psychological Trauma Therapy','Safe, evidence-based trauma healing and emotional recovery with licensed care.','Professional Care'],['leaf','Acupuncture for Stress Relief','Holistic somatic therapy to release physical tension, lower cortisol, and calm anxiety.','Holistic Wellness']];
-const FAQ=[['How can I book a counseling session?','Reach out through our contact form by selecting your preferred topic, or visit our office at AMA Computer College – Bitas, Cabanatuan City.'],['Are my inquiries confidential?','Professional counseling sessions and inquiries are handled with respect for privacy and confidentiality in accordance with professional ethical standards.'],['What are your office hours?','We are open Monday through Friday, 9:00 AM to 5:00 PM.']];
-const IC={arrow:'M5 12h14m-6-6 6 6-6 6',back:'m15 18-6-6 6-6M9 12h11',menu:'M4 7h16M4 12h16M4 17h16',close:'m6 6 12 12M18 6 6 18',ext:'M14 3h7v7m0-7-11 11M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'};
-const ic=(n,s=18)=>`<svg class="icon" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IC[n]}"/></svg>`;
-const IL={
-heart:'<path d="M30 50 11 33C-1 20 17 7 30 20 43 7 61 20 49 33Z" fill="#ef7180"/><path d="m30 48-15-14c-8-8 3-17 11-9l4 4 4-4c8-8 19 1 11 9Z" fill="#ff9b9f"/><path d="m12 13 2 4m34-3-3 4M7 29l4 1" stroke="#e8b451" stroke-width="3" stroke-linecap="round"/>',
-sparkle:'<path d="m31 6 5 15 15 5-15 5-5 15-5-15-15-5 15-5Z" fill="#f3bd55"/><path d="m47 38 2 6 6 2-6 2-2 6-2-6-6-2 6-2Z" fill="#ed7c88"/><circle cx="13" cy="14" r="4" fill="#68b7a2"/>',
-arrow:'<path d="M15 48h30" stroke="#345f4c" stroke-width="4" stroke-linecap="round"/><path d="M23 45V33h14v12" fill="#f0bd58"/><path d="M30 33V17" stroke="#478f78" stroke-width="4" stroke-linecap="round"/><path d="m22 24 8-8 8 8m-8-8v16" fill="none" stroke="#478f78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 48v5h22v-5" fill="#ed7c88"/>',
-compass:'<circle cx="30" cy="30" r="23" fill="#d9eee5"/><circle cx="30" cy="30" r="17" fill="#fff" stroke="#478f78" stroke-width="3"/><path d="m38 20-5 13-12 7 5-13Z" fill="#ed7180"/><circle cx="30" cy="30" r="3" fill="#345f4c"/><path d="M30 4v5m0 42v5M4 30h5m42 0h5" stroke="#e8b451" stroke-width="3" stroke-linecap="round"/>',
-message:'<path d="M9 13a5 5 0 0 1 5-5h22a5 5 0 0 1 5 5v12a5 5 0 0 1-5 5H23l-9 7v-7a5 5 0 0 1-5-5Z" fill="#77c4ae"/><path d="M18 18h14m-14 6h9" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M41 34h5a5 5 0 0 0 5-5v-8a5 5 0 0 0-5-5h-3" fill="#f4c15b"/>',
-people:'<circle cx="22" cy="19" r="8" fill="#f0bd58"/><circle cx="41" cy="22" r="7" fill="#ed7c88"/><path d="M7 49v-7a13 13 0 0 1 26 0v7Z" fill="#68b7a2"/><path d="M34 36a11 11 0 0 1 16 10v3H36" fill="#8f9ce0"/><path d="M16 19a6 6 0 0 0 12 0" fill="#fff" opacity=".7"/>',
-brain:'<path d="M29 12a9 9 0 0 0-16 6 9 9 0 0 0 1 16 9 9 0 0 0 15 7Zm2 0a9 9 0 0 1 16 6 9 9 0 0 1-1 16 9 9 0 0 1-15 7Z" fill="#ed9ba3"/><path d="M30 13v29M19 21c5 0 7 3 7 7m-8 7c4 0 7 2 7 6m17-20c-5 0-7 3-7 7m8 7c-4 0-7 2-7 6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>',
-leaf:'<path d="M47 10C27 10 12 15 12 32a16 16 0 0 0 16 16c17 0 19-18 19-38Z" fill="#68b7a2"/><path d="M10 51c6-12 15-19 29-26" fill="none" stroke="#345f4c" stroke-width="4" stroke-linecap="round"/><path d="M31 19c-1 5 1 9 6 11M20 33c5-1 9 1 11 6" fill="none" stroke="#a9dfca" stroke-width="3" stroke-linecap="round"/>'};
-const ICO={heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>',sparkle:'<path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 14 1.2 2.8L23 18l-2.8 1.2L19 22l-1.2-2.8L15 18l2.8-1.2L19 14Z"/>',arrow:'<path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/>',compass:'<circle cx="12" cy="12" r="9"/><path d="m16.2 7.8-2.5 5.9-5.9 2.5 2.5-5.9 5.9-2.5Z"/>',message:'<path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/><path d="M8 12h8m-8-4h5"/>',people:'<path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2m16 0v-2a4 4 0 0 0-3-3.9M14 3.1a4 4 0 0 1 0 7.8"/><circle cx="10" cy="7" r="4"/>',brain:'<path d="M12 18V5a3 3 0 0 0-5.8-1A4 4 0 0 0 4 11a4 4 0 0 0 2 7.5A3.5 3.5 0 0 0 12 18Zm0-13a3 3 0 0 1 5.8-1A4 4 0 0 1 20 11a4 4 0 0 1-2 7.5A3.5 3.5 0 0 1 12 18"/>',leaf:'<path d="M20 4c-8 0-14 2-14 9a7 7 0 0 0 7 7c7 0 7-8 7-16Z"/><path d="M4 21c2-5 6-8 12-11"/>'};const il=(n,s=60)=>{const z=Math.round(s*.48);return `<svg class="illustration" aria-hidden="true" width="${z}" height="${z}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICO[n]}</svg>`};
-const eb=t=>`<span class="eyebrow">${t}</span>`;
-const bt=(t,go,c='')=>`<button class="button ${c}" data-go="${go}">${t}</button>`;
-const AVC=['#527b6b','#4f7a8c','#5f8f7d','#6b8a7a','#4c7f86','#5a7d6c','#6a8f87'];
-const ini=n=>{const w=n.replace(/^Dr\.\s*/,'').split(' ');return w[0][0]+w[w.length-1][0]};
-const hero=`<div class="art team-photo"><img src="${IMAGE_ROOT}compass-counselors.png" alt="The COMPASS guidance counselor team"></div>`;
+const EM = "compassonlineclinic@gmail.com";
+const IMAGE_ROOT = new URL("assets/images/", document.currentScript.src);
+const MAP_QUERY = "AMA Computer College Bitas Cabanatuan City Nueva Ecija";
+const NAV = [
+  ["home", "Home"],
+  ["about", "About"],
+  ["team", "Our Team"],
+  ["services", "Services"],
+  ["location", "Location"],
+  ["contact", "Contact"],
+];
+const TEAM = [
+  [
+    "Dr. Charissa M. Rañeses",
+    "Stress Management & Daily Routines",
+    "Assists individuals with stress management and positive daily routines.",
+    "Dr. Charissa M. Rañeses assists individuals with stress management techniques, relaxation, and establishing healthy daily routines.",
+  ],
+  [
+    "Richard Pletado",
+    "Personal Growth & Emotional Resilience",
+    "Provides a compassionate ear for personal growth and emotional resilience.",
+    "Richard Pletado provides a compassionate ear for personal growth, mindfulness, and overcoming everyday stress.",
+  ],
+  [
+    "Rae Wendy T. Lazaro",
+    "Student Advocacy & Empowerment",
+    "Dedicated to student advocacy, peer support, and personal empowerment.",
+    "Wendy is a Registered Guidance Counselor and Certified Life Coach who provides accessible online mental health and counseling services. She holds a Bachelor of Science in Psychology and a Master’s degree in Guidance and Counseling.\n\nCurrently serving as a Guidance Counselor in a private educational institution, Wendy has experience administering psychological and projective tests and supporting students. She works with adolescents and adults navigating mental health concerns and everyday family, personal, and work-related challenges.\n\nWendy is an active member of the Philippine Guidance and Counseling Association, Inc. (PGCA), the accredited professional organization for guidance counselors in the Philippines.",
+  ],
+  [
+    "Carleen O. Mata",
+    "Leadership & Career Pathing",
+    "Focuses on leadership development, career pathing, and community support.",
+    "Carleen O. Mata focuses on leadership development, career pathing, and building strong peer support communities for young adults.",
+  ],
+  [
+    "Dr. Aileen Villanueva",
+    "Academic Counseling & Student Support",
+    "Dedicated to helping students navigate academic milestones with empathy.",
+    "Dr. Aileen Villanueva brings over 10 years of experience helping students navigate academic milestones, time management, and personal growth with empathy and actionable advice.",
+  ],
+  [
+    "Lerrie De Leon",
+    "Mindful Reflection & Goal Setting",
+    "Passionate about mindful reflection, counseling support, and goal setting.",
+    "Lerrie De Leon is passionate about mindful reflection, counseling support, and helping individuals set achievable life goals.",
+  ],
+  [
+    "Nathalie Cogay",
+    "Student Welfare & Positive Encouragement",
+    "Specializes in student welfare, academic planning, and positive encouragement.",
+    "Nathalie Cogay specializes in student welfare, academic planning, and cultivating positive emotional resilience.",
+  ],
+];
+const SERV = [
+  [
+    "message",
+    "Counseling",
+    "One-on-one sessions offering professional support, clarity, and personalized coping strategies.",
+    "Available",
+  ],
+  [
+    "compass",
+    "Guidance",
+    "Directional mentoring for students and adults navigating life choices and personal milestones.",
+    "Available",
+  ],
+  [
+    "heart",
+    "Marital Therapy",
+    "Couples counseling designed to restore communication, trust, and relationship harmony.",
+    "Specialized",
+  ],
+  [
+    "people",
+    "Family Counseling",
+    "Support for families to resolve conflict, understand dynamics, and strengthen bonds.",
+    "Specialized",
+  ],
+  [
+    "brain",
+    "Psychological Trauma Therapy",
+    "Safe, evidence-based trauma healing and emotional recovery with licensed care.",
+    "Professional Care",
+  ],
+  [
+    "leaf",
+    "Acupuncture for Stress Relief",
+    "Holistic somatic therapy to release physical tension, lower cortisol, and calm anxiety.",
+    "Holistic Wellness",
+  ],
+];
+const FAQ = [
+  [
+    "How can I book a counseling session?",
+    "Reach out through our contact form by selecting your preferred topic, or visit our office at AMA Computer College – Bitas, Cabanatuan City.",
+  ],
+  [
+    "Are my inquiries confidential?",
+    "Professional counseling sessions and inquiries are handled with respect for privacy and confidentiality in accordance with professional ethical standards.",
+  ],
+  [
+    "What are your office hours?",
+    "We are open Monday through Friday, 9:00 AM to 5:00 PM.",
+  ],
+];
+const IC = {
+  arrow: "M5 12h14m-6-6 6 6-6 6",
+  back: "m15 18-6-6 6-6M9 12h11",
+  menu: "M4 7h16M4 12h16M4 17h16",
+  close: "m6 6 12 12M18 6 6 18",
+  ext: "M14 3h7v7m0-7-11 11M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6",
+};
+const ic = (n, s = 18) =>
+  `<svg class="icon" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IC[n]}"/></svg>`;
+const IL = {
+  heart:
+    '<path d="M30 50 11 33C-1 20 17 7 30 20 43 7 61 20 49 33Z" fill="#ef7180"/><path d="m30 48-15-14c-8-8 3-17 11-9l4 4 4-4c8-8 19 1 11 9Z" fill="#ff9b9f"/><path d="m12 13 2 4m34-3-3 4M7 29l4 1" stroke="#e8b451" stroke-width="3" stroke-linecap="round"/>',
+  sparkle:
+    '<path d="m31 6 5 15 15 5-15 5-5 15-5-15-15-5 15-5Z" fill="#f3bd55"/><path d="m47 38 2 6 6 2-6 2-2 6-2-6-6-2 6-2Z" fill="#ed7c88"/><circle cx="13" cy="14" r="4" fill="#68b7a2"/>',
+  arrow:
+    '<path d="M15 48h30" stroke="#345f4c" stroke-width="4" stroke-linecap="round"/><path d="M23 45V33h14v12" fill="#f0bd58"/><path d="M30 33V17" stroke="#478f78" stroke-width="4" stroke-linecap="round"/><path d="m22 24 8-8 8 8m-8-8v16" fill="none" stroke="#478f78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 48v5h22v-5" fill="#ed7c88"/>',
+  compass:
+    '<circle cx="30" cy="30" r="23" fill="#d9eee5"/><circle cx="30" cy="30" r="17" fill="#fff" stroke="#478f78" stroke-width="3"/><path d="m38 20-5 13-12 7 5-13Z" fill="#ed7180"/><circle cx="30" cy="30" r="3" fill="#345f4c"/><path d="M30 4v5m0 42v5M4 30h5m42 0h5" stroke="#e8b451" stroke-width="3" stroke-linecap="round"/>',
+  message:
+    '<path d="M9 13a5 5 0 0 1 5-5h22a5 5 0 0 1 5 5v12a5 5 0 0 1-5 5H23l-9 7v-7a5 5 0 0 1-5-5Z" fill="#77c4ae"/><path d="M18 18h14m-14 6h9" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M41 34h5a5 5 0 0 0 5-5v-8a5 5 0 0 0-5-5h-3" fill="#f4c15b"/>',
+  people:
+    '<circle cx="22" cy="19" r="8" fill="#f0bd58"/><circle cx="41" cy="22" r="7" fill="#ed7c88"/><path d="M7 49v-7a13 13 0 0 1 26 0v7Z" fill="#68b7a2"/><path d="M34 36a11 11 0 0 1 16 10v3H36" fill="#8f9ce0"/><path d="M16 19a6 6 0 0 0 12 0" fill="#fff" opacity=".7"/>',
+  brain:
+    '<path d="M29 12a9 9 0 0 0-16 6 9 9 0 0 0 1 16 9 9 0 0 0 15 7Zm2 0a9 9 0 0 1 16 6 9 9 0 0 1-1 16 9 9 0 0 1-15 7Z" fill="#ed9ba3"/><path d="M30 13v29M19 21c5 0 7 3 7 7m-8 7c4 0 7 2 7 6m17-20c-5 0-7 3-7 7m8 7c-4 0-7 2-7 6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>',
+  leaf: '<path d="M47 10C27 10 12 15 12 32a16 16 0 0 0 16 16c17 0 19-18 19-38Z" fill="#68b7a2"/><path d="M10 51c6-12 15-19 29-26" fill="none" stroke="#345f4c" stroke-width="4" stroke-linecap="round"/><path d="M31 19c-1 5 1 9 6 11M20 33c5-1 9 1 11 6" fill="none" stroke="#a9dfca" stroke-width="3" stroke-linecap="round"/>',
+};
+const ICO = {
+  heart:
+    '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>',
+  sparkle:
+    '<path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 14 1.2 2.8L23 18l-2.8 1.2L19 22l-1.2-2.8L15 18l2.8-1.2L19 14Z"/>',
+  arrow: '<path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  compass:
+    '<circle cx="12" cy="12" r="9"/><path d="m16.2 7.8-2.5 5.9-5.9 2.5 2.5-5.9 5.9-2.5Z"/>',
+  message:
+    '<path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/><path d="M8 12h8m-8-4h5"/>',
+  people:
+    '<path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2m16 0v-2a4 4 0 0 0-3-3.9M14 3.1a4 4 0 0 1 0 7.8"/><circle cx="10" cy="7" r="4"/>',
+  brain:
+    '<path d="M12 18V5a3 3 0 0 0-5.8-1A4 4 0 0 0 4 11a4 4 0 0 0 2 7.5A3.5 3.5 0 0 0 12 18Zm0-13a3 3 0 0 1 5.8-1A4 4 0 0 1 20 11a4 4 0 0 1-2 7.5A3.5 3.5 0 0 1 12 18"/>',
+  leaf: '<path d="M20 4c-8 0-14 2-14 9a7 7 0 0 0 7 7c7 0 7-8 7-16Z"/><path d="M4 21c2-5 6-8 12-11"/>',
+};
+const il = (n, s = 60) => {
+  const z = Math.round(s * 0.48);
+  return `<svg class="illustration" aria-hidden="true" width="${z}" height="${z}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICO[n]}</svg>`;
+};
+const eb = (t) => `<span class="eyebrow">${t}</span>`;
+const bt = (t, go, c = "") =>
+  `<button class="button ${c}" data-go="${go}">${t}</button>`;
+const AVC = [
+  "#527b6b",
+  "#4f7a8c",
+  "#5f8f7d",
+  "#6b8a7a",
+  "#4c7f86",
+  "#5a7d6c",
+  "#6a8f87",
+];
+const ini = (n) => {
+  const w = n.replace(/^Dr\.\s*/, "").split(" ");
+  return w[0][0] + w[w.length - 1][0];
+};
+const hero = `<div class="art team-photo"><img src="${IMAGE_ROOT}compass-counselors.png" alt="The COMPASS guidance counselor team"></div>`;
 
-const P={
-home:()=>`<section class="hero"><div class="hero-bg"></div><div class="hero-in container"><div class="hero-copy">${eb('COMPASS · Support')}<h1>Here to <span class="rot hl"><span class="in">guide</span><span>lead</span><span>support</span><span>assist</span><span>help</span></span> every person.</h1><p class="lead">Every person deserves a safe space to be heard and supported. Compass helps you explore resources and find your next steps easily.</p><div class="row">${bt('View Services '+ic('arrow'),'services')}${bt('Our Team','team','sec')}</div><p class="small-copy">Just start with what you feel. You are welcome here.</p></div></div></section><section class="page"><div class="pgrid">${[['Listen','We listen first.'],['Care','People come first.'],['Grow','Take simple steps.'],['Direction','Find your way.']].map(([t,d])=>`<article class="pcard"><h3>${t}</h3><p>${d}</p></article>`).join('')}</div></section>`,
-about:()=>`<section class="page about"><div class="ahl">${eb('Who we are')}<h1>A steady guide when the path is unclear.</h1><p>Compass helps you find your direction while letting you choose your own path. We offer simple guidance and support.</p></div><div class="adet">${eb('About Us')}<h2>Guidance to help you move forward.</h2><p>A welcoming space where anyone can explore information and find support.</p><div class="clist">${[['01','Our Mission','To make guidance simple and encourage personal growth.'],['02','Our Vision','A community where everyone feels heard and supported.'],['03','Our Promise','To communicate clearly and share helpful resources.']].map(([n,t,d])=>`<div class="com"><span>${n}</span><div><h3>${t}</h3><p>${d}</p></div></div>`).join('')}</div></div></section>`,
-team:()=>`<section class="page"><div class="banner"><div>${eb('Meet Our Team')}<h1>The People Behind Compass</h1><p>A dedicated group of guidance counselors committed to support, empower, and walk with you in your journey.</p></div>${hero}</div><div class="tgrid">${TEAM.map((m,i)=>`<button class="mcard" data-m="${i}"><span class="av" style="background:${AVC[i]}" role="img" aria-label="${m[0]}">${ini(m[0])}</span><span class="mc"><span class="mrole">Guidance Counselor</span><strong>${m[0]}</strong><span class="msum">${m[2]}</span><span class="mact">View Full Profile ${ic('arrow',15)}</span></span></button>`).join('')}</div></section>`,
-member:()=>{const m=TEAM[sel];return `<section class="page mpage">${bt(ic('back')+' Back to Team','team','sec sm')}<article class="prof"><span class="av big" style="background:${AVC[sel]}" role="img" aria-label="${m[0]}">${ini(m[0])}</span>${eb('Guidance Counselor')}<h1>${m[0]}</h1><span class="pill">${m[1]}</span><div class="bio"><h2>Professional Background &amp; Biography</h2><p>${m[3]}</p><div class="cta"><div><strong>Need a session?</strong><span>Reach out via our contact form.</span></div>${bt('Contact Counselor','contact','sm')}</div></div></article></section>`},
-services:()=>`<section class="page"><div class="pheading">${eb('Professional Care')}<h1>Our Counseling &amp; Therapy Services</h1><p>Specialized therapeutic and guidance services tailored to your emotional, mental, and relational well-being.</p></div><div class="services-list">${SERV.map((s,i)=>`<article class="service-item scroll-reveal"><span class="service-number">${String(i+1).padStart(2,'0')}</span><span class="service-icon">${il(s[0],62)}</span><div class="service-copy"><h2>${s[1]}</h2><p>${s[2]}</p><span class="service-kind">${s[3]}</span></div></article>`).join('')}</div></section>`,
-location:()=>`<section class="page"><div class="pheading">${eb('Location')}<h1>Find us here.</h1><p>Visit our campus location below.</p></div><div class="lgrid"><div class="map"><iframe title="Map to AMA Computer College–Bitas, Cabanatuan City" src="https://maps.google.com/maps?q=${encodeURIComponent(MAP_QUERY)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div><div class="lcard">${eb('Office')}<h2>Visit Compass</h2><p><strong>AMA Computer College – Bitas</strong><br>Cabanatuan City, Nueva Ecija, Philippines</p><a class="button" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(MAP_QUERY)}" target="_blank" rel="noopener noreferrer">Open Maps ${ic('ext')}</a></div></div></section>`,
-contact:()=>`<section class="page"><div class="cgrid"><div class="cintro">${eb('Get in Touch')}<h1>You are not alone.</h1><p>Send us a quick message or ask a question. We are here to listen.</p><div class="cdet"><div><strong>Email</strong><a href="mailto:${EM}">${EM}</a></div><div><strong>Location</strong><span>Cabanatuan City</span></div><div><strong>Hours</strong><span>Mon - Fri, 9am - 5pm</span></div></div></div><form class="cform" id="cf" action="https://api.web3forms.com/submit" method="POST"><h2>Send a Message</h2><p>Send your name, email, topic, and message directly through Web3Forms.</p><input type="hidden" name="access_key" value="a0526dbb-15ce-40f8-b356-39ebca4c3b4d"><input type="hidden" name="subject" value="New COMPASS contact form message"><input type="hidden" name="from_name" value="COMPASS Online Clinic"><div class="frow"><label>Name<input name="name" autocomplete="name" placeholder="Your name" required></label><label>Email<input name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label></div><label>Topic<select name="category" required><option value="" disabled selected>Select topic</option><option>Counseling &amp; Therapy</option><option>Marital &amp; Family Therapy</option><option>Trauma Support</option><option>Stress Relief &amp; Acupuncture</option><option>Other</option></select></label><label>Message<textarea name="message" required maxlength="2000" placeholder="How can we help you?"></textarea></label><input type="checkbox" name="botcheck" style="display:none"><button class="button" type="submit">Send Message ${ic('arrow')}</button><p class="fstatus" role="status" aria-live="polite" id="fs"></p></form></div></section>`,
-faqs:()=>`<section class="page narrow">${eb('Customer Support')}<h1>Frequently Asked Questions (FAQs)</h1><div class="faq">${FAQ.map(([q,a])=>`<article class="info"><h2>${q}</h2><p>${a}</p></article>`).join('')}</div></section>`,
-legal:()=>`<section class="page narrow">${eb('Legal Information')}<h1>Privacy Policy &amp; Terms of Service</h1><article class="info"><h2>Privacy Policy</h2><p>At COMPASS, we respect and protect your personal information. Any data or message submitted through our inquiry forms is handled with strict confidentiality. We do not sell, rent, or share visitor data with third parties.</p><p>We use your information solely to respond to your inquiries and provide relevant guidance and counseling information.</p></article><article class="info"><h2>Terms of Service</h2><p>By accessing and using this website, you agree to abide by these terms. COMPASS provides informational guidance and support services. Our online tools and contact forms are not emergency or crisis hotlines.</p><p>All content, imagery, and resources provided on this platform are protected under copyright law and belong to COMPASS.</p></article></section>`};
+const P = {
+  home: () =>
+    `<section class="hero"><div class="hero-bg"></div><div class="hero-in container"><div class="hero-copy">${eb("COMPASS · Support")}<h1>Here to <span class="rot hl"><span class="in">guide</span><span>lead</span><span>support</span><span>assist</span><span>help</span></span> every person.</h1><p class="lead">Every person deserves a safe space to be heard and supported. Compass helps you explore resources and find your next steps easily.</p><div class="row">${bt("View Services " + ic("arrow"), "services")}${bt("Our Team", "team", "sec")}</div><p class="small-copy">Just start with what you feel. You are welcome here.</p></div></div></section><section class="page"><div class="pgrid">${[
+      ["Listen", "We listen first."],
+      ["Care", "People come first."],
+      ["Grow", "Take simple steps."],
+      ["Direction", "Find your way."],
+    ]
+      .map(
+        ([t, d]) => `<article class="pcard"><h3>${t}</h3><p>${d}</p></article>`,
+      )
+      .join("")}</div></section>`,
+  about: () =>
+    `<section class="page about"><div class="ahl">${eb("Who we are")}<h1>A steady guide when the path is unclear.</h1><p>Compass helps you find your direction while letting you choose your own path. We offer simple guidance and support.</p></div><div class="adet">${eb("About Us")}<h2>Guidance to help you move forward.</h2><p>A welcoming space where anyone can explore information and find support.</p><div class="clist">${[
+      [
+        "01",
+        "Our Mission",
+        "To make guidance simple and encourage personal growth.",
+      ],
+      [
+        "02",
+        "Our Vision",
+        "A community where everyone feels heard and supported.",
+      ],
+      [
+        "03",
+        "Our Promise",
+        "To communicate clearly and share helpful resources.",
+      ],
+    ]
+      .map(
+        ([n, t, d]) =>
+          `<div class="com"><span>${n}</span><div><h3>${t}</h3><p>${d}</p></div></div>`,
+      )
+      .join("")}</div></div></section>`,
+  team: () =>
+    `<section class="page"><div class="banner"><div>${eb("Meet Our Team")}<h1>The People Behind Compass</h1><p>A dedicated group of guidance counselors committed to support, empower, and walk with you in your journey.</p></div>${hero}</div><div class="tgrid">${TEAM.map((m, i) => `<button class="mcard" data-m="${i}"><span class="av" style="background:${AVC[i]}" role="img" aria-label="${m[0]}">${ini(m[0])}</span><span class="mc"><span class="mrole">Guidance Counselor</span><strong>${m[0]}</strong><span class="msum">${m[2]}</span><span class="mact">View Full Profile ${ic("arrow", 15)}</span></span></button>`).join("")}</div></section>`,
+  member: () => {
+    const m = TEAM[sel];
+    const paragraphs = m[3]
+      .split(/\n\s*\n/)
+      .map(
+        (paragraph, index) =>
+          `<p style="--bio-delay: ${index * 120}ms">${paragraph}</p>`,
+      )
+      .join("");
+    return `<section class="page mpage">${bt(ic("back") + " Back to Team", "team", "sec sm")}<article class="prof"><span class="av big" style="background:${AVC[sel]}" role="img" aria-label="${m[0]}">${ini(m[0])}</span>${eb("Guidance Counselor")}<h1>${m[0]}</h1><span class="pill">${m[1]}</span><div class="bio"><h2>Professional Background &amp; Biography</h2><div class="bio-copy">${paragraphs}</div><div class="cta"><div><strong>Need a session?</strong><span>Reach out via our contact form.</span></div>${bt("Contact Counselor", "contact", "sm")}</div></div></article></section>`;
+  },
+  services: () =>
+    `<section class="page"><div class="pheading">${eb("Professional Care")}<h1>Our Counseling &amp; Therapy Services</h1><p>Specialized therapeutic and guidance services tailored to your emotional, mental, and relational well-being.</p></div><div class="services-list">${SERV.map((s, i) => `<article class="service-item scroll-reveal"><span class="service-number">${String(i + 1).padStart(2, "0")}</span><span class="service-icon">${il(s[0], 62)}</span><div class="service-copy"><h2>${s[1]}</h2><p>${s[2]}</p><span class="service-kind">${s[3]}</span></div></article>`).join("")}</div></section>`,
+  location: () =>
+    `<section class="page"><div class="pheading">${eb("Location")}<h1>Find us here.</h1><p>Visit our campus location below.</p></div><div class="lgrid"><div class="map"><iframe title="Map to AMA Computer College–Bitas, Cabanatuan City" src="https://maps.google.com/maps?q=${encodeURIComponent(MAP_QUERY)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div><div class="lcard">${eb("Office")}<h2>Visit Compass</h2><p><strong>AMA Computer College – Bitas</strong><br>Cabanatuan City, Nueva Ecija, Philippines</p><a class="button" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(MAP_QUERY)}" target="_blank" rel="noopener noreferrer">Open Maps ${ic("ext")}</a></div></div></section>`,
+  contact: () =>
+    `<section class="page"><div class="cgrid"><div class="cintro">${eb("Get in Touch")}<h1>You are not alone.</h1><p>Send us a quick message or ask a question. We are here to listen.</p><div class="cdet"><div><strong>Email</strong><a href="mailto:${EM}">${EM}</a></div><div><strong>Location</strong><span>Cabanatuan City</span></div><div><strong>Hours</strong><span>Mon - Fri, 9am - 5pm</span></div></div></div><form class="cform" id="cf" action="/api/contact" method="POST"><h2>Send a Message</h2><p>Send your name, email, topic, and message directly through Web3Forms.</p><div class="frow"><label>Name<input name="name" autocomplete="name" placeholder="Your name" required maxlength="100"></label><label>Email<input name="email" type="email" autocomplete="email" placeholder="you@example.com" required maxlength="254"></label></div><label>Topic<select name="category" required><option value="" disabled selected>Select topic</option><option>Counseling &amp; Therapy</option><option>Marital &amp; Family Therapy</option><option>Trauma Support</option><option>Stress Relief &amp; Acupuncture</option><option>Other</option></select></label><label>Message<textarea name="message" required maxlength="2000" placeholder="How can we help you?"></textarea></label><input type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" hidden><button class="button" type="submit">Send Message ${ic("arrow")}</button><p class="fstatus" role="status" aria-live="polite" id="fs"></p></form></div></section>`,
+  faqs: () =>
+    `<section class="page narrow">${eb("Customer Support")}<h1>Frequently Asked Questions (FAQs)</h1><div class="faq">${FAQ.map(([q, a]) => `<article class="info"><h2>${q}</h2><p>${a}</p></article>`).join("")}</div></section>`,
+  legal: () =>
+    `<section class="page narrow">${eb("Legal Information")}<h1>Privacy Policy &amp; Terms of Service</h1><article class="info"><h2>Privacy Policy</h2><p>At COMPASS, we respect and protect your personal information. Any data or message submitted through our inquiry forms is handled with strict confidentiality. We do not sell, rent, or share visitor data with third parties.</p><p>We use your information solely to respond to your inquiries and provide relevant guidance and counseling information.</p></article><article class="info"><h2>Terms of Service</h2><p>By accessing and using this website, you agree to abide by these terms. COMPASS provides informational guidance and support services. Our online tools and contact forms are not emergency or crisis hotlines.</p><p>All content, imagery, and resources provided on this platform are protected under copyright law and belong to COMPASS.</p></article></section>`,
+};
 
-const $=s=>document.querySelector(s);
-const SECS=NAV.map(([id])=>id);
-let act='home',sel=0,rt,scrollFrame=0;
-function rot(){clearInterval(rt);const r=document.querySelector('.rot');if(!r)return;const words=[...r.children];let index=0;const fit=()=>{r.style.width=words[index].offsetWidth+'px'};fit();window.addEventListener('resize',fit);if(words.length<2)return;rt=setInterval(()=>{const old=words[index];index=(index+1)%words.length;old.className='out';words[index].className='in';fit();setTimeout(()=>{old.className=''},800)},2600)}
-function nav(){const links=$('#links');if(!links.querySelector('.nav-link'))links.innerHTML=NAV.map(([id,label])=>`<a class="nav-link" data-go="${id}" href="#${id}">${label}</a>`).join('')+'<span class="ind"></span>';let activeLink=null;links.querySelectorAll('.nav-link').forEach(link=>{const active=link.dataset.go===act;link.classList.toggle('on',active);if(active){link.setAttribute('aria-current','location');activeLink=link}else link.removeAttribute('aria-current')});const indicator=links.querySelector('.ind');if(activeLink){indicator.style.opacity=1;indicator.style.width=activeLink.offsetWidth+'px';indicator.style.transform=`translateX(${activeLink.getBoundingClientRect().left-links.getBoundingClientRect().left}px)`}else indicator.style.opacity=0}
-function render(){const view=$('#view');view.innerHTML=SECS.map(id=>`<div id="${id}">${P[id]()}</div>`).join('');nav();rot();syncScrollEffects();syncActiveSection()}
-function syncScrollEffects(){const trigger=innerHeight*.36;document.querySelectorAll('.com,.scroll-reveal').forEach(item=>item.classList.toggle('is-visible',item.getBoundingClientRect().top<=trigger))}
-function syncActiveSection(){const marker=$('.site-header').getBoundingClientRect().bottom+1;let current=SECS[0];for(const id of SECS){const section=document.getElementById(id);if(section&&section.getBoundingClientRect().top<=marker)current=id;else break}if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-2)current=SECS[SECS.length-1];if(current!==act){act=current;nav()}}
-function showDialog(contentHtml,profile=false){const dialog=$('#info-dialog'),content=$('#info-dialog-content');dialog.classList.toggle('profile-dialog',profile);content.innerHTML=contentHtml;const heading=content.querySelector('h1');if(heading)heading.id='info-dialog-title';if(!dialog.open)dialog.showModal()}
-function showInfo(id){showDialog(P[id]())}
-function showProfile(index){sel=index;showDialog(P.member(),true)}
-function go(id){setMenu(false);const dialog=$('#info-dialog');if(id==='faqs'||id==='legal'){if(dialog.open)dialog.close();showInfo(id);return}const section=document.getElementById(id);if(!section)throw new Error(`Unknown COMPASS section: ${id}`);if(dialog.open)dialog.close();history.replaceState(null,'','#'+id);section.scrollIntoView({behavior:'smooth',block:'start'});if(SECS.includes(id)){act=id;nav()}}
-function setMenu(open){$('#links').classList.toggle('open',open);const button=$('#mt');button.innerHTML=ic(open?'close':'menu',20);button.setAttribute('aria-expanded',open);button.setAttribute('aria-label',open?'Close navigation':'Open navigation')}
-document.addEventListener('click',event=>{
-  const member=event.target.closest('[data-m]');if(member){showProfile(Number(member.dataset.m));return}
-  const link=event.target.closest('[data-go]');if(link){event.preventDefault();go(link.dataset.go)}
-});
-$('#info-dialog-close').addEventListener('click',()=>$('#info-dialog').close());
-$('#info-dialog').addEventListener('click',event=>{if(event.target===event.currentTarget)event.currentTarget.close()});
-document.addEventListener('submit',async event=>{
-  if(event.target.id!=='cf')return;
-  event.preventDefault();
-  const form=event.target,button=form.querySelector('button[type="submit"]'),status=$('#fs');
-  button.disabled=true;
-  status.textContent='Sending your message...';
-  try{
-    const response=await fetch(form.action,{method:'POST',body:new FormData(form)});
-    const result=await response.json();
-    if(!response.ok||!result.success)throw new Error(result.message||`Request failed (${response.status})`);
-    status.textContent='Your message was sent successfully. Thank you for reaching out.';
-    form.reset();
-  }catch(error){
-    console.error('Unable to send the contact form:',error);
-    status.textContent='Your message could not be sent. Please check your connection and try again.';
-  }finally{
-    button.disabled=false;
+const $ = (s) => document.querySelector(s);
+const SECS = NAV.map(([id]) => id);
+let act = "home",
+  sel = 0,
+  memberPage = null,
+  rt,
+  scrollFrame = 0;
+function rot() {
+  clearInterval(rt);
+  const r = document.querySelector(".rot");
+  if (!r) return;
+  const words = [...r.children];
+  let index = 0;
+  const fit = () => {
+    r.style.width = words[index].offsetWidth + "px";
+  };
+  fit();
+  window.addEventListener("resize", fit);
+  if (words.length < 2) return;
+  rt = setInterval(() => {
+    const old = words[index];
+    index = (index + 1) % words.length;
+    old.className = "out";
+    words[index].className = "in";
+    fit();
+    setTimeout(() => {
+      old.className = "";
+    }, 800);
+  }, 2600);
+}
+function nav() {
+  const links = $("#links");
+  if (!links.querySelector(".nav-link"))
+    links.innerHTML =
+      NAV.map(
+        ([id, label]) =>
+          `<a class="nav-link" data-go="${id}" href="#${id}">${label}</a>`,
+      ).join("") + '<span class="ind"></span>';
+  let activeLink = null;
+  links.querySelectorAll(".nav-link").forEach((link) => {
+    const active = link.dataset.go === act;
+    link.classList.toggle("on", active);
+    if (active) {
+      link.setAttribute("aria-current", "location");
+      activeLink = link;
+    } else link.removeAttribute("aria-current");
+  });
+  const indicator = links.querySelector(".ind");
+  if (activeLink) {
+    indicator.style.opacity = 1;
+    indicator.style.width = activeLink.offsetWidth + "px";
+    indicator.style.transform = `translateX(${activeLink.getBoundingClientRect().left - links.getBoundingClientRect().left}px)`;
+  } else indicator.style.opacity = 0;
+}
+function render() {
+  const view = $("#view");
+  view.innerHTML =
+    memberPage === null
+      ? SECS.map((id) => `<div id="${id}">${P[id]()}</div>`).join("")
+      : `<div id="member">${P.member()}</div>`;
+  nav();
+  rot();
+  if (memberPage === null) {
+    syncScrollEffects();
+    syncActiveSection();
+  }
+}
+function syncScrollEffects() {
+  const trigger = innerHeight * 0.36;
+  document
+    .querySelectorAll(".com,.scroll-reveal")
+    .forEach((item) =>
+      item.classList.toggle(
+        "is-visible",
+        item.getBoundingClientRect().top <= trigger,
+      ),
+    );
+}
+function syncActiveSection() {
+  if (memberPage !== null) {
+    if (act !== "team") {
+      act = "team";
+      nav();
+    }
+    return;
+  }
+  const marker = $(".site-header").getBoundingClientRect().bottom + 1;
+  let current = SECS[0];
+  for (const id of SECS) {
+    const section = document.getElementById(id);
+    if (section && section.getBoundingClientRect().top <= marker) current = id;
+    else break;
+  }
+  if (
+    window.innerHeight + window.scrollY >=
+    document.documentElement.scrollHeight - 2
+  )
+    current = SECS[SECS.length - 1];
+  if (current !== act) {
+    act = current;
+    nav();
+  }
+}
+function showDialog(contentHtml) {
+  const dialog = $("#info-dialog"),
+    content = $("#info-dialog-content");
+  content.innerHTML = contentHtml;
+  const heading = content.querySelector("h1");
+  if (heading) heading.id = "info-dialog-title";
+  if (!dialog.open) dialog.showModal();
+}
+function showInfo(id) {
+  showDialog(P[id]());
+}
+function showProfile(index) {
+  if (!Number.isInteger(index) || !TEAM[index])
+    throw new Error(`Unknown COMPASS team member: ${index}`);
+  sel = index;
+  memberPage = index;
+  act = "team";
+  history.pushState(null, "", `#member-${index}`);
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function go(id) {
+  setMenu(false);
+  const dialog = $("#info-dialog");
+  if (id === "faqs" || id === "legal") {
+    if (dialog.open) dialog.close();
+    showInfo(id);
+    return;
+  }
+  if (memberPage !== null) {
+    memberPage = null;
+    act = id;
+    render();
+  }
+  const section = document.getElementById(id);
+  if (!section) throw new Error(`Unknown COMPASS section: ${id}`);
+  if (dialog.open) dialog.close();
+  history.replaceState(null, "", "#" + id);
+  section.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (SECS.includes(id)) {
+    act = id;
+    nav();
+  }
+}
+function restoreRoute() {
+  const memberMatch = location.hash.match(/^#member-(\d+)$/);
+  const memberIndex = memberMatch ? Number(memberMatch[1]) : -1;
+  if (TEAM[memberIndex]) {
+    sel = memberIndex;
+    memberPage = memberIndex;
+    act = "team";
+    render();
+    window.scrollTo(0, 0);
+    return;
+  }
+
+  memberPage = null;
+  const sectionId = location.hash.slice(1);
+  act = SECS.includes(sectionId) ? sectionId : "home";
+  render();
+  requestAnimationFrame(() => {
+    const targetId = SECS.includes(sectionId) ? sectionId : "home";
+    document.getElementById(targetId)?.scrollIntoView({ block: "start" });
+    act = targetId;
+    nav();
+  });
+}
+function setMenu(open) {
+  $("#links").classList.toggle("open", open);
+  const button = $("#mt");
+  button.innerHTML = ic(open ? "close" : "menu", 20);
+  button.setAttribute("aria-expanded", open);
+  button.setAttribute(
+    "aria-label",
+    open ? "Close navigation" : "Open navigation",
+  );
+}
+document.addEventListener("click", (event) => {
+  const member = event.target.closest("[data-m]");
+  if (member) {
+    showProfile(Number(member.dataset.m));
+    return;
+  }
+  const link = event.target.closest("[data-go]");
+  if (link) {
+    event.preventDefault();
+    go(link.dataset.go);
   }
 });
-$('#mt').addEventListener('click',()=>setMenu(!$('#links').classList.contains('open')));
-addEventListener('scroll',()=>{$('.site-header').classList.toggle('sc',scrollY>8);if(!scrollFrame)scrollFrame=requestAnimationFrame(()=>{scrollFrame=0;syncActiveSection();syncScrollEffects()})},{passive:true});
-addEventListener('resize',()=>{if(!matchMedia('(max-width: 960px)').matches)nav()});
+$("#info-dialog-close").addEventListener("click", () =>
+  $("#info-dialog").close(),
+);
+$("#info-dialog").addEventListener("click", (event) => {
+  if (event.target === event.currentTarget) event.currentTarget.close();
+});
+document.addEventListener("submit", async (event) => {
+  if (event.target.id !== "cf") return;
+  event.preventDefault();
+  const form = event.target,
+    button = form.querySelector('button[type="submit"]'),
+    status = $("#fs");
+  button.disabled = true;
+  status.textContent = "Sending your message...";
+  try {
+    const response = await fetch(form.action, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(Object.fromEntries(new FormData(form).entries())),
+    });
+    const result = await response.json();
+    if (!response.ok || !result.success)
+      throw new Error(result.error || `Request failed (${response.status})`);
+    status.textContent =
+      "Your message was sent successfully. Thank you for reaching out.";
+    form.reset();
+  } catch (error) {
+    console.error("Unable to send the contact form:", error);
+    status.textContent =
+      "Your message could not be sent. Please check your connection and try again.";
+  } finally {
+    button.disabled = false;
+  }
+});
+$("#mt").addEventListener("click", () =>
+  setMenu(!$("#links").classList.contains("open")),
+);
+addEventListener(
+  "scroll",
+  () => {
+    $(".site-header").classList.toggle("sc", scrollY > 8);
+    if (!scrollFrame)
+      scrollFrame = requestAnimationFrame(() => {
+        scrollFrame = 0;
+        syncActiveSection();
+        syncScrollEffects();
+      });
+  },
+  { passive: true },
+);
+addEventListener("resize", () => {
+  if (!matchMedia("(max-width: 960px)").matches) nav();
+});
+addEventListener("popstate", restoreRoute);
 setMenu(false);
-render();
+restoreRoute();
